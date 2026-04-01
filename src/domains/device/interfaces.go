@@ -1,6 +1,10 @@
 package device
 
-import "context"
+import (
+	"context"
+
+	domainApp "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/app"
+)
 
 // IDeviceUsecase defines device lifecycle operations.
 type IDeviceUsecase interface {
@@ -8,7 +12,7 @@ type IDeviceUsecase interface {
 	GetDevice(ctx context.Context, deviceID string) (*Device, error)
 	AddDevice(ctx context.Context, deviceID string) (*Device, error)
 	RemoveDevice(ctx context.Context, deviceID string) error
-	LoginDevice(ctx context.Context, deviceID string) error
+	LoginDevice(ctx context.Context, deviceID string) (domainApp.LoginResponse, error)
 	LoginDeviceWithCode(ctx context.Context, deviceID string, phone string) (string, error)
 	LogoutDevice(ctx context.Context, deviceID string) error
 	ReconnectDevice(ctx context.Context, deviceID string) error

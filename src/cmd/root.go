@@ -394,7 +394,7 @@ func initApp() {
 	messageUsecase = usecase.NewMessageService(chatStorageRepo)
 	groupUsecase = usecase.NewGroupService()
 	newsletterUsecase = usecase.NewNewsletterService()
-	deviceUsecase = usecase.NewDeviceService(dm)
+	deviceUsecase = usecase.NewDeviceService(dm, appUsecase)
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

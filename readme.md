@@ -63,6 +63,7 @@ Download:
 ## Feature
 
 - Send WhatsApp message via http API, [docs/openapi.yml](./docs/openapi.yaml) for more details
+- Built-in Swagger UI is available in REST mode at `/swagger`
 - **MCP (Model Context Protocol) Server Support** - Integrate with AI agents and tools using standardized protocol
 - Mention someone
   - `@phoneNumber`
@@ -500,6 +501,7 @@ You can fork or edit this source code !
 ### HTTP REST API
 
 - Check [docs/openapi.yml](./docs/openapi.yaml) for detailed API specifications.
+- Open built-in Swagger UI at `/swagger` after starting REST mode.
 - Use [SwaggerEditor](https://editor.swagger.io) to visualize the API.
 - Generate HTTP clients using [openapi-generator](https://openapi-generator.tech/#try).
 
@@ -573,7 +575,6 @@ You can fork or edit this source code !
 | ✅       | Unfollow Newsletter                    | POST   | /newsletter/unfollow                |
 | ✅       | Get Chat List                          | GET    | /chats                              |
 | ✅       | Get Chat Messages                      | GET    | /chat/:chat_jid/messages            |
-| ✅       | Label Chat                             | POST   | /chat/:chat_jid/label               |
 | ✅       | Pin Chat                               | POST   | /chat/:chat_jid/pin                 |
 | ✅       | Archive Chat                           | POST   | /chat/:chat_jid/archive             |
 | ✅       | Set Disappearing Messages              | POST   | /chat/:chat_jid/disappearing        |

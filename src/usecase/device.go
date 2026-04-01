@@ -4,18 +4,21 @@ import (
 	"context"
 	"fmt"
 
+	domainApp "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/app"
 	domainDevice "github.com/aldinokemal/go-whatsapp-web-multidevice/domains/device"
 	"github.com/aldinokemal/go-whatsapp-web-multidevice/infrastructure/whatsapp"
 	"github.com/aldinokemal/go-whatsapp-web-multidevice/ui/websocket"
 )
 
 type serviceDevice struct {
-	manager *whatsapp.DeviceManager
+	manager    *whatsapp.DeviceManager
+	appService domainApp.IAppUsecase
 }
 
-func NewDeviceService(manager *whatsapp.DeviceManager) domainDevice.IDeviceUsecase {
+func NewDeviceService(manager *whatsapp.DeviceManager, appService domainApp.IAppUsecase) domainDevice.IDeviceUsecase {
 	return &serviceDevice{
-		manager: manager,
+		manager:    manager,
+		appService: appService,
 	}
 }
 
@@ -64,12 +67,20 @@ func (s *serviceDevice) RemoveDevice(_ context.Context, deviceID string) error {
 	return nil
 }
 
-func (s *serviceDevice) LoginDevice(_ context.Context, _ string) error {
-	return fmt.Errorf("device login per ID is not implemented yet")
+func (s *serviceDevice) LoginDevice(ctx context.Context, deviceID string) (domainApp.LoginResponse, error) {
+	if s.appService == nil {
+		return domainApp.LoginResponse{}, fmt.Errorf("app service not initialized")
+	}
+
+	return s.appService.Login(ctx, deviceID)
 }
 
-func (s *serviceDevice) LoginDeviceWithCode(_ context.Context, _ string, _ string) (string, error) {
-	return "", fmt.Errorf("device login with code is not implemented yet")
+func (s *serviceDevice) LoginDeviceWithCode(ctx context.Context, deviceID string, phone string) (string, error) {
+	if s.appService == nil {
+		return "", fmt.Errorf("app service not initialized")
+	}
+
+	return s.appService.LoginWithCode(ctx, deviceID, phone)
 }
 
 func (s *serviceDevice) LogoutDevice(ctx context.Context, deviceID string) error {

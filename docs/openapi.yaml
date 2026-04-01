@@ -1,13 +1,14 @@
 openapi: "3.0.0"
 info:
   title: WhatsApp API MultiDevice
-  version: 8.3.1
+  version: 8.3.5
   description: |
     This API is used for sending whatsapp via API.
 
     Device scoping:
     - Send `X-Device-Id` on all device-scoped REST calls.
     - WebSocket: connect to `/ws?device_id=<id>`.
+    - Swagger UI: open `/swagger` in REST mode.
 servers:
   - url: http://localhost:3000
 tags:
@@ -33,6 +34,42 @@ security:
   - basicAuth: []
 
 paths:
+  /swagger:
+    get:
+      operationId: swaggerUi
+      tags:
+        - app
+      summary: Swagger UI
+      description: Interactive Swagger UI for exploring and testing the REST API.
+      responses:
+        '200':
+          description: HTML page
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /swagger/openapi.yaml:
+    get:
+      operationId: swaggerSpec
+      tags:
+        - app
+      summary: OpenAPI specification
+      description: Raw OpenAPI document used by Swagger UI and external client generators.
+      responses:
+        '200':
+          description: YAML document
+          content:
+            application/yaml:
+              schema:
+                type: string
+        '500':
+          description: Specification file not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorInternalServer'
+
   /app/login:
     get:
       operationId: appLogin
@@ -2028,75 +2065,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorInternalServer'
-  /chat/{chat_jid}/label:
-    post:
-      operationId: labelChat
-      tags:
-        - chat
-      summary: Label or unlabel a chat
-      description: Apply or remove a label from a chat conversation
-      parameters:
-        - $ref: '#/components/parameters/DeviceIdHeader'
-        - in: path
-          name: chat_jid
-          schema:
-            type: string
-          required: true
-          description: Chat JID (e.g., phone@s.whatsapp.net for individual or groupid@g.us for group)
-          example: '6289685028129@s.whatsapp.net'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                label_id:
-                  type: string
-                  example: 'label_123'
-                  description: Unique identifier for the label
-                label_name:
-                  type: string
-                  example: 'Important'
-                  description: Display name for the label
-                labeled:
-                  type: boolean
-                  example: true
-                  description: Whether to apply (true) or remove (false) the label
-              required:
-                - label_id
-                - label_name
-                - labeled
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LabelChatResponse'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorBadRequest'
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorUnauthorized'
-        '404':
-          description: Chat Not Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorNotFound'
-        '500':
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorInternalServer'
   /chat/{chat_jid}/pin:
     post:
       operationId: pinChat
@@ -3740,6 +3708,9 @@ components:
         results:
           type: object
           properties:
+            device_id:
+              type: string
+              example: 'my-device-id'
             pair_code:
               type: string
               example: ABCD-1234
@@ -3755,6 +3726,9 @@ components:
         results:
           type: object
           properties:
+            device_id:
+              type: string
+              example: 'my-device-id'
             qr_duration:
               type: integer
               example: 30
@@ -4248,34 +4222,6 @@ components:
           format: date-time
           example: '2024-01-15T10:30:00Z'
           description: Record last update timestamp
-
-    LabelChatResponse:
-      type: object
-      properties:
-        code:
-          type: string
-          example: SUCCESS
-        message:
-          type: string
-          example: Chat labeled successfully with label 'Important'
-        results:
-          type: object
-          properties:
-            status:
-              type: string
-              example: success
-            message:
-              type: string
-              example: Chat labeled successfully with label 'Important'
-            chat_jid:
-              type: string
-              example: '6289685028129@s.whatsapp.net'
-            label_id:
-              type: string
-              example: 'label_123'
-            labeled:
-              type: boolean
-              example: true
 
     PinChatResponse:
       type: object
